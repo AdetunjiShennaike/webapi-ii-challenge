@@ -75,6 +75,15 @@ router.get('/:id', async (req, res) => {
 router.delete('/:id', (req, res) => {
   //set the id 
   const Id = req.params.id;
+  Posts.findById(Id).then(post => {
+      if (post == 0) {
+        return sendMissingID(res);
+      }
+      else {
+        return res.status(200).json(post);
+      }
+    })
+    .catch( err => { return sendError('oops', err)})
   Posts
   .remove(Id)
   .then( post => {

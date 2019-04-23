@@ -36,12 +36,21 @@ router.post('/', (req, res) => {
     res.status(201).json(post);
   })
   .catch( err => {
-    return sendError( 'There was an error while saving the post to the database', err )
+    return sendError( 'There was an error while saving the post to the database', err );
   })
 })
 
 //create a get request for the data
-
+router.get('/', (req, res) => {
+  Posts
+  .find()
+  .then( post => {
+    res.status(200).json(post);
+  })
+  .catch( err => {
+    return sendError( 'The posts information could not be retrieved.', err );
+  })
+})
 
 // | GET    | /api/posts     | Returns an array of all the post objects contained in the database.                                                                                                         |
 // | GET    | /api/posts/:id | Returns the post object with the specified id.                                                                                                                              |

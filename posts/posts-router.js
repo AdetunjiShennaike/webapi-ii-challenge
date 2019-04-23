@@ -20,7 +20,7 @@ const sendMissingID = (res) => {
 }
 
 // post to the server
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   //add request body
   const { title, contents } = req.body;
   const posted = { title, contents };
@@ -41,7 +41,7 @@ router.post('/', (req, res) => {
 })
 
 //create a get request for the data
-router.get('/', (req, res) => {
+router.get('/', async (req, res) => {
   Posts
   .find()
   .then( post => {
@@ -52,8 +52,44 @@ router.get('/', (req, res) => {
   })
 })
 
-// | GET    | /api/posts     | Returns an array of all the post objects contained in the database.                                                                                                         |
-// | GET    | /api/posts/:id | Returns the post object with the specified id.                                                                                                                              |
+//return a specific id requested data
+router.get('/:id', async (req, res) => {
+  //set the id 
+  const Id = req.params.id;
+  Posts
+  .findById(Id)
+  .then( post => {
+    if (post == 0) {
+      return sendMissingID(res);
+    }
+    else {
+      return res.status(200).json(post);
+    }
+  })
+  .catch( err => {
+    return sendError( 'The posts information could not be retrieved.', err );
+  })
+})
+
+// delete the selected item by id
+router.delete('/:id', (req, res) => {
+  //set the id 
+  const Id = req.params.id;
+  Posts
+  .remove(Id)
+  .then( post => {
+    if (post == 0) {
+      return sendMissingID(res);
+    }
+    else {
+      return res.status(200).json(post);
+    }
+  })
+  .catch( err => {
+    return sendError( 'The post could not be removed.', err );
+  })
+})
+
 // | DELETE | /api/posts/:id | Removes the post with the specified id and returns the **deleted post object**. You may need to make additional calls to the database in order to satisfy this requirement. |
 // | PUT    | /api/posts/:id | Updates the post with the specified `id` using data from the `request body`. Returns the modified document, **NOT the original**.    
 

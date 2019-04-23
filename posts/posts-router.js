@@ -75,15 +75,18 @@ router.get('/:id', async (req, res) => {
 router.delete('/:id', (req, res) => {
   //set the id 
   const Id = req.params.id;
-  Posts.findById(Id).then(post => {
-      if (post == 0) {
-        return sendMissingID(res);
-      }
-      else {
-        return res.status(200).json(post);
-      }
-    })
-    .catch( err => { return sendError('oops', err)})
+  Posts.findById(Id)
+  .then(post => {
+    if (post == 0) {
+      return sendMissingID(res);
+    }
+    else {
+      return res.status(200).json(post);
+    }
+  })
+  .catch( err => { 
+    return sendError('oops', err)
+  })
   Posts
   .remove(Id)
   .then( post => {
@@ -99,12 +102,34 @@ router.delete('/:id', (req, res) => {
   })
 })
 
-// | DELETE | /api/posts/:id | Removes the post with the specified id and returns the **deleted post object**. You may need to make additional calls to the database in order to satisfy this requirement. |
-// | PUT    | /api/posts/:id | Updates the post with the specified `id` using data from the `request body`. Returns the modified document, **NOT the original**.    
+//making a put request
+router.put('/:id', (req, res) => {
+  //set id
+  const Id = req.params.id
 
+  //add request body
+  const { title, contents } = req.body;
+  const posted = { title, contents };
 
-
-
+  //check the req.body
+  if ( !title || !contents ) {
+    return res.status(400).json({ errorMessage: 'Please provide title and contents for the post.' });
+  }
+  Posts
+  .update(Id, posted)
+  .then( post => {
+    if (post == 0) {
+      return sendMissingID(res);
+    }
+    else {
+      post = {...post, posted}
+      return res.status(201).json(post);
+    }
+  })
+  .catch( err => {
+    return sendError( 'The post information could not be modified.', err );
+  })
+})
 
 //export the route 
 module.exports = router

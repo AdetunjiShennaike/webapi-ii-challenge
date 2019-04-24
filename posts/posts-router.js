@@ -1,6 +1,5 @@
-//import express and cors
+//import express 
 const express = require('express');
-const cors = require('cors');
 
 //import the database
 const Posts = require('../data/db');
@@ -72,7 +71,7 @@ router.get('/:id', async (req, res) => {
 })
 
 // delete the selected item by id
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   //set the id 
   const Id = req.params.id;
   Posts.findById(Id)
@@ -103,7 +102,7 @@ router.delete('/:id', (req, res) => {
 })
 
 //making a put request
-router.put('/:id', (req, res) => {
+router.put('/:id', async (req, res) => {
   //set id
   const Id = req.params.id
 
